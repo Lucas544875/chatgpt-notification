@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Notification</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <div class="header">
+      <img src="icons/icon48.png" alt="ChatGPT Notification" class="logo">
+      <h1>ChatGPT Notification</h1>
+    </div>
+    
+    <div class="content">
+      <div class="status-section">
+        <div class="status-indicator" id="status">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="status-text" id="statusText">待機中</span>
+        </div>
+      </div>
+      
+      <div class="settings-section">
+        <div class="setting-item">
+          <label for="enableNotifications">通知を有効にする</label>
+          <input type="checkbox" id="enableNotifications" checked>
+        </div>
+        
+        <div class="setting-item">
+          <label for="playSound">サウンドを再生</label>
+          <input type="checkbox" id="playSound">
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <p class="description">
+          ChatGPTが回答を完了したときに通知でお知らせします。
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -28,14 +28,38 @@ function detectResponseCompletion() {
 }
 
 function observeDOM() {
+  let throttleTimer = null;
+  
   const observer = new MutationObserver(() => {
-    detectResponseCompletion();
+    if (throttleTimer) return;
+    throttleTimer = setTimeout(() => {
+      detectResponseCompletion();
+      throttleTimer = null;
+    }, 100);
   });
   
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+  function startObserving() {
+    const chatContainer = document.querySelector('[data-testid="conversation-turn"]') ||
+                         document.querySelector('.conversation-turn-common') ||
+                         document.querySelector('[role="main"]') ||
+                         document.querySelector('main');
+    
+    if (chatContainer) {
+      observer.observe(chatContainer, {
+        childList: true,
+        subtree: true
+      });
+      console.log('Observing chat container:', chatContainer.tagName);
+    } else {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      console.log('Fallback: Observing document.body');
+    }
+  }
+  
+  setTimeout(startObserving, 1000);
 }
 
 if (document.readyState === 'loading') {

@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const enableNotificationsCheckbox = document.getElementById('enableNotifications');
-  const playSoundCheckbox = document.getElementById('playSound');
   const statusText = document.getElementById('statusText');
   const statusDot = document.getElementById('statusDot');
 
-  chrome.storage.sync.get(['enableNotifications', 'playSound'], (result) => {
+  chrome.storage.sync.get(['enableNotifications'], (result) => {
     enableNotificationsCheckbox.checked = result.enableNotifications ?? true;
-    playSoundCheckbox.checked = result.playSound ?? true;
   });
 
   enableNotificationsCheckbox.addEventListener('change', (e) => {
@@ -14,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStatus();
   });
 
-  playSoundCheckbox.addEventListener('change', (e) => {
-    chrome.storage.sync.set({ playSound: e.target.checked });
-  });
 
   function updateStatus() {
     if (enableNotificationsCheckbox.checked) {

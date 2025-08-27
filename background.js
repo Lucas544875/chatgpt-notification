@@ -1,14 +1,18 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'RESPONSE_COMPLETED') {
-    chrome.storage.sync.get(['enableNotifications'], (result) => {
+    chrome.storage.sync.get(['enableNotifications', 'minResponseTime'], (result) => {
       const enableNotifications = result.enableNotifications ?? true;
+      const minResponseTime = result.minResponseTime ?? 10;
+      const responseTime = message.responseTime || 600;
       
-      if (enableNotifications) {
+      console.log(`Response time: ${responseTime}s, minimum: ${minResponseTime}s`);
+      
+      if (enableNotifications && responseTime >= minResponseTime) {
         const notificationOptions = {
           type: 'basic',
           iconUrl: 'icons/icon48.png',
           title: 'ChatGPT Notification',
-          message: 'ChatGPTの回答が完了しました！',
+          message: `ChatGPTの回答が完了しました！（${responseTime.toFixed(1)}秒）`,
           priority: 2
         };
         
@@ -20,8 +24,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             console.log('Notification created:', notificationId);
           }
         });
-      } else {
+      } else if (!enableNotifications) {
         console.log('Notifications disabled, skipping notification');
+      } else {
+        console.log(`Response too fast (${responseTime}s < ${minResponseTime}s), skipping notification`);
       }
     });
   }

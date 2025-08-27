@@ -1,15 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
   const enableNotificationsCheckbox = document.getElementById('enableNotifications');
+  const minResponseTimeInput = document.getElementById('minResponseTime');
   const statusText = document.getElementById('statusText');
   const statusDot = document.getElementById('statusDot');
 
-  chrome.storage.sync.get(['enableNotifications'], (result) => {
+  chrome.storage.sync.get(['enableNotifications', 'minResponseTime'], (result) => {
     enableNotificationsCheckbox.checked = result.enableNotifications ?? true;
+    minResponseTimeInput.value = result.minResponseTime ?? 10;
   });
 
   enableNotificationsCheckbox.addEventListener('change', (e) => {
     chrome.storage.sync.set({ enableNotifications: e.target.checked });
     updateStatus();
+  });
+
+  minResponseTimeInput.addEventListener('change', (e) => {
+    const value = Math.max(1, Math.min(300, parseInt(e.target.value) || 10));
+    e.target.value = value;
+    chrome.storage.sync.set({ minResponseTime: value });
+    console.log("setting changed: minResponseTime "+ value);
   });
 
 

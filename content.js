@@ -1,10 +1,12 @@
 let isGenerating = false;
 let lastMessageCount = 0;
 let currentPageId = window.location.pathname;
+let responseStartTime = null;
 
 function resetState() {
   isGenerating = false;
   lastMessageCount = 0;
+  responseStartTime = null;
   console.log('ChatGPT page changed - state reset');
 }
 
@@ -29,7 +31,8 @@ function detectResponseCompletion() {
   
   if (streamingIndicator && !isGenerating) {
     isGenerating = true;
-    console.log('ChatGPT started generating response');
+    responseStartTime = Date.now();
+    console.log('ChatGPT started generating response at', responseStartTime);
   }
   
   if (isGenerating && !streamingIndicator) {
@@ -38,10 +41,17 @@ function detectResponseCompletion() {
     if (currentMessageCount > lastMessageCount) {
       console.log('ChatGPT finished generating response');
       
+      const endTime = Date.now();
+      const responseTime = responseStartTime ? (endTime - responseStartTime) / 1000 : 0;
+      
       chrome.runtime.sendMessage({
         type: 'RESPONSE_COMPLETED',
-        timestamp: Date.now()
+        timestamp: endTime,
+        responseTime: responseTime
       });
+      
+      console.log('Response completed in', responseTime, 'seconds');
+      responseStartTime = null;
       
       lastMessageCount = currentMessageCount;
     }

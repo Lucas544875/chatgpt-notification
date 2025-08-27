@@ -1,7 +1,28 @@
 let isGenerating = false;
 let lastMessageCount = 0;
+let currentPageId = window.location.pathname;
+
+function resetState() {
+  isGenerating = false;
+  lastMessageCount = 0;
+  console.log('ChatGPT page changed - state reset');
+}
+
+function checkPageChange() {
+  const newPageId = window.location.pathname;
+
+  if (newPageId !== currentPageId) {
+    currentPageId = newPageId;
+    resetState();
+  }
+}
 
 function detectResponseCompletion() {
+  const hostname = window.location.hostname;
+  if (hostname === 'chatgpt.com' || hostname === 'chat.openai.com') {
+    checkPageChange();
+  }
+  
   const streamingIndicator = document.querySelector('[data-testid="stop-button"]');
   const messages = document.querySelectorAll('[data-message-author-role="assistant"]');
   const currentMessageCount = messages.length;

@@ -8,7 +8,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       priority: 2
     };
     
-    chrome.notifications.create('chatgpt-response-complete', notificationOptions, (notificationId) => {
+    const uniqueId = 'chatgpt-response-' + Date.now();
+    chrome.notifications.create(uniqueId, notificationOptions, (notificationId) => {
       if (chrome.runtime.lastError) {
         console.error('Notification error:', chrome.runtime.lastError);
       } else {
@@ -19,7 +20,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 chrome.notifications.onClicked.addListener((notificationId) => {
-  if (notificationId === 'chatgpt-response-complete') {
+  if (notificationId.startsWith('chatgpt-response-')) {
     chrome.tabs.query({ url: ['https://chatgpt.com/*', 'https://chat.openai.com/*'] }, (tabs) => {
       if (tabs.length > 0) {
         chrome.tabs.update(tabs[0].id, { active: true });

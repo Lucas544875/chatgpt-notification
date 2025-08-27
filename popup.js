@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusDot = document.getElementById('statusDot');
 
   chrome.storage.sync.get(['enableNotifications', 'playSound'], (result) => {
-    enableNotificationsCheckbox.checked = result.enableNotifications !== false;
-    playSoundCheckbox.checked = result.playSound === true;
+    enableNotificationsCheckbox.checked = result.enableNotifications ?? true;
+    playSoundCheckbox.checked = result.playSound ?? true;
   });
 
   enableNotificationsCheckbox.addEventListener('change', (e) => {

@@ -5,7 +5,8 @@
   "description": "ChatGPTが回答を出力し終えた時に通知してくれるChrome拡張機能",
   "permissions": [
     "notifications",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "host_permissions": [
     "https://chatgpt.com/*",

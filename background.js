@@ -1,19 +1,27 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'RESPONSE_COMPLETED') {
-    const notificationOptions = {
-      type: 'basic',
-      iconUrl: 'icons/icon48.png',
-      title: 'ChatGPT Notification',
-      message: 'ChatGPTの回答が完了しました！',
-      priority: 2
-    };
-    
-    const uniqueId = 'chatgpt-response-' + Date.now();
-    chrome.notifications.create(uniqueId, notificationOptions, (notificationId) => {
-      if (chrome.runtime.lastError) {
-        console.error('Notification error:', chrome.runtime.lastError);
+    chrome.storage.sync.get(['enableNotifications'], (result) => {
+      const enableNotifications = result.enableNotifications ?? true;
+      
+      if (enableNotifications) {
+        const notificationOptions = {
+          type: 'basic',
+          iconUrl: 'icons/icon48.png',
+          title: 'ChatGPT Notification',
+          message: 'ChatGPTの回答が完了しました！',
+          priority: 2
+        };
+        
+        const uniqueId = 'chatgpt-response-' + Date.now();
+        chrome.notifications.create(uniqueId, notificationOptions, (notificationId) => {
+          if (chrome.runtime.lastError) {
+            console.error('Notification error:', chrome.runtime.lastError);
+          } else {
+            console.log('Notification created:', notificationId);
+          }
+        });
       } else {
-        console.log('Notification created:', notificationId);
+        console.log('Notifications disabled, skipping notification');
       }
     });
   }
